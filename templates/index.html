@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommendation App</title>
+    script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
+</head>
+<body>
+    <h1>Book Recommendation App</h1>
+    <form method="post">
+        <label for="book_input">Enter a book:</label>
+        <input type="text" name="book_input" id="book_input" required>
+        <button type="submit">Get Recommendations</button>
+    </form>
+    <script>
+$(document).ready(function() {
+    // Initialize typeahead on the input field
+    $('#book_input').typeahead({
+        source: function(query, process) {
+            // AJAX request to get autocomplete suggestions
+            $.ajax({
+                url: '/autocomplete',
+                method: 'POST',
+                data: { query: query },
+                dataType: 'json',
+                success: function(data) {
+                    process(data.suggestions);
+                }
+            });
+        }
+    });
+});
+</script>
+
+    {% if user_input %}
+        <h2>Recommended books based on "{{ user_input }}":</h2>
+        <ul>
+            {% for book in recommended_books %}
+                <li>{{ book }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
+
